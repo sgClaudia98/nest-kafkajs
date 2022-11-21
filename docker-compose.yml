@@ -7,7 +7,8 @@ services:
     container_name: "hrm_api_${NODE_ENV}"
     image: "hrm_api_${NODE_ENV}"
     environment:
-      - NODE_ENV:${NODE_ENV}
+      NODE_ENV: ${NODE_ENV}
+      API_KAKFA_CONNECT: kafka:9092
     build:
       context: ./
       target: "${NODE_ENV}"
