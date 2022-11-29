@@ -9,17 +9,22 @@ import {
   KeycloakConnectModule,
   RoleGuard,
   AuthGuard,
+  TokenValidation,
 } from "nest-keycloak-connect";
 
 @Module({
   imports: [
     KafkaModule,
     KeycloakConnectModule.register({
-      authServerUrl: "http://keycloak:8080/auth",
+      serverUrl: "http://localhost:8080",
       realm: "testing",
       clientId: "api-client",
-      secret: "bcc74c94-1f0e-4957-a9d5-0cdfeb978e05",
       // Secret key of the client taken from keycloak server
+      secret: "bcc74c94-1f0e-4957-a9d5-0cdfeb978e05",
+      // Validation setup and public key config
+      tokenValidation: TokenValidation.OFFLINE,
+      realmPublicKey:
+        "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoqASg2L0wSCDgSYsuxj5AMLIzId2AQbz2bsdEvpGNshbvI+f5dOydpcXFILBVAYwamYvNjwMPcILy/rvN0uL6DEOMS/ZW93r4c+knwzwdUB6bSPVUunj/SaEUURORfczq2MGivw4bKL4AGI8hRDtF/Gkz6IDR+LjudaVrIJ4ae3UNJLC2wS7q9vz74NHnlL9XjQJX9k1/zZhVLWg1B/XkmVt5VLFj+tLAw0DNTrrXTt7xIQbGAOdy1IwNJ3ottLYReouyFZLWeiHCHpJOd9JPYk66Qyw2SeNxv40R6akyYxxVwudpaNKNWWlV1pXFHShynDXxDi+mZPd652Al+n0nwIDAQAB",
     }),
   ],
   controllers: [AppController],

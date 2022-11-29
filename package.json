@@ -25,6 +25,7 @@
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "jose": "^4.11.1",
     "kafkajs": "^2.2.2",
     "nest-keycloak-connect": "^1.9.0",
     "reflect-metadata": "^0.1.13",

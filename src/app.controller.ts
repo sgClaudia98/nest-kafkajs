@@ -25,13 +25,13 @@ export class AppController {
   }
 
   @Get("/user")
-  @Roles({ roles: ["nestjs-kafka:kafka-user"] })
+  @Roles({ roles: ["realm:user"] })
   getUser(): string {
     return `Hello user`;
   }
 
   @Get("/admin")
-  @Roles({ roles: ["nestjs-kafka:kafka-admin"] })
+  @Roles({ roles: ["realm:admin"] })
   getAdmin(): string {
     return `Hello admin`;
   }
