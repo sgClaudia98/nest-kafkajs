@@ -1,13 +1,13 @@
 version: '3.8'
 services:
-  api:
+  frontend:
     depends_on:
       - kafka
       - keycloak
-    container_name: "frontend_api_${NODE_ENV}"
-    image: "frontend_api_${NODE_ENV}"
+    container_name: "frontend_api_dev"
+    image: "frontend_api_dev"
     environment:
-      NODE_ENV: ${NODE_ENV}
+      NODE_ENV: dev
       KAKFA_API_CONNECT: kafka_sad:9092
       KEYCLOAK_API_CONNECT: keycloak_sad:8080
       KEYCLOAK_REALM: master
@@ -15,9 +15,9 @@ services:
       KEYCLOAK_SECRET: b500edae-a51a-461e-9672-dab78d694ecb
     build:
       context: ./frontend/
-      target: "${NODE_ENV}"
+      target: "dev"
       dockerfile: Dockerfile
-    entrypoint: ["npm", "run", "start:${NODE_ENV}"]
+    entrypoint: ["npm", "run", "start:dev"]
     ports:
       - 3000:3000
     volumes:

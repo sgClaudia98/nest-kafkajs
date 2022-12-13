@@ -1,7 +1,10 @@
-Run
+# Estructura de Proyecto
 
-`export HOST_IP=$(ifconfig | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v 127.0.0.1 | awk '{ print $2 }' | cut -f2 -d: | head -n1)`
+1. frontend: aplicación NodeJs (NestJS) encargada de recibir las peticiones REST del cliente y comunica con kafkajs
+2. temp: carpeta de configuraciones temporales
+3. worker: aplicacion NodeJs () encargada de realizar los trabajos que solicita el karka, escucha los mensajes, ejecuta lo solicitado y retorna una respuesta.
+4. docker-compose: además de los contenedores de las 2 aplicaciones definidas anteriormente se declara el keycloak para la authenticación, el kafka y el zookeeper.
 
-`export NODE_ENV=dev`
+# Run
 
 `docker-compose up --build`
