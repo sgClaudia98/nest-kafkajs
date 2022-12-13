@@ -9,7 +9,7 @@ import {
 @Injectable()
 export class ConsumerService implements OnApplicationShutdown {
   private readonly kafka = new Kafka({
-    brokers: [process.env.API_KAKFA_CONNECT],
+    brokers: [process.env.KAKFA_API_CONNECT],
   });
 
   private readonly consumers: Consumer[] = [];

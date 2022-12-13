@@ -4,27 +4,31 @@ services:
     depends_on:
       - kafka
       - keycloak
-    container_name: "hrm_api_${NODE_ENV}"
-    image: "hrm_api_${NODE_ENV}"
+    container_name: "frontend_api_${NODE_ENV}"
+    image: "frontend_api_${NODE_ENV}"
     environment:
       NODE_ENV: ${NODE_ENV}
-      API_KAKFA_CONNECT: kafka:9092
-      API_KEYCLOAK_CONNECT: keycloak:8080
+      KAKFA_API_CONNECT: kafka_sad:9092
+      KEYCLOAK_API_CONNECT: keycloak_sad:8080
+      KEYCLOAK_REALM: master
+      KEYCLOAK_CLIENT_ID: api-client
+      KEYCLOAK_SECRET: b500edae-a51a-461e-9672-dab78d694ecb
     build:
-      context: ./
+      context: ./frontend/
       target: "${NODE_ENV}"
       dockerfile: Dockerfile
     entrypoint: ["npm", "run", "start:${NODE_ENV}"]
     ports:
       - 3000:3000
     volumes:
-      - ./:/usr/src/app
+      - ./frontend/:/usr/src/app
       - /usr/src/app/node_modules
     restart: unless-stopped
-    networks:
-      - kafka-net
 
   keycloak:
+    container_name: "keycloak_sad"
+    depends_on:
+      - kafka
     image: quay.io/keycloak/keycloak:20.0.1
     command: 'start-dev'
     ports: 
@@ -41,10 +45,9 @@ services:
     image: wurstmeister/zookeeper:latest
     ports:
       - "2181:2181"
-    networks:
-      - kafka-net
   
   kafka:
+    container_name: "kafka_sad"
     image: wurstmeister/kafka:2.11-1.1.1
     ports:
       - 9092:9092
@@ -64,7 +67,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - kafka-net
+
 networks:
-  kafka-net:
+  default: 
+    name: sad-net

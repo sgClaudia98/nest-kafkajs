@@ -1,11 +1,5 @@
 import { Controller, Get } from "@nestjs/common";
-import {
-  KeycloakConnectModule,
-  KeycloakCredentials,
-  Public,
-  Roles,
-  Unprotected,
-} from "nest-keycloak-connect";
+import { Roles, Unprotected } from "nest-keycloak-connect";
 import { AppService } from "./app.service";
 
 @Controller()

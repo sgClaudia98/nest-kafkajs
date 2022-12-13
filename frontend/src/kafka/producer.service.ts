@@ -8,7 +8,7 @@ import { Kafka, Producer, ProducerRecord } from "kafkajs";
 @Injectable()
 export class ProducerService implements OnModuleInit, OnApplicationShutdown {
   private readonly kafka = new Kafka({
-    brokers: [process.env.API_KAKFA_CONNECT],
+    brokers: [process.env.KAKFA_API_CONNECT],
   });
 
   private readonly producer: Producer = this.kafka.producer();
