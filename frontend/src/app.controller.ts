@@ -1,6 +1,7 @@
-import { Controller, Get } from "@nestjs/common";
+import { Body, Controller, Get, Post } from "@nestjs/common";
 import { Roles, Unprotected } from "nest-keycloak-connect";
 import { AppService } from "./app.service";
+import { MessageDto } from "./kafka/messages.interfaces";
 
 @Controller()
 export class AppController {
@@ -10,6 +11,12 @@ export class AppController {
   @Unprotected()
   getHello() {
     return this.appService.testing();
+  }
+
+  @Post()
+  createMessage(@Body() message: MessageDto) {
+    console.log(message);
+    return message;
   }
 
   @Get("/anonymouse")

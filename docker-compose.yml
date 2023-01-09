@@ -36,10 +36,10 @@ services:
     environment: 
       - 'KEYCLOAK_ADMIN=admin'
       - 'KEYCLOAK_ADMIN_PASSWORD=admin'
-      - 'KEYCLOAK_IMPORT=/tmp/realm-export.json'
+      - 'KEYCLOAK_IMPORT=./tmp/realm-export.json'
       - 'DB_VENDOR=h2'
     volumes: 
-      - ./tmp/realm-export.json:/tmp/realm-export.json
+      - ./tmp/realm-export.json:/opt/keycloak/data/import
 
   zookeeper:
     image: wurstmeister/zookeeper:latest
@@ -51,7 +51,6 @@ services:
     image: wurstmeister/kafka:2.11-1.1.1
     ports:
       - 9092:9092
-      - 9094:9094
     links:
       - zookeeper
     environment:
@@ -61,10 +60,8 @@ services:
       KAFKA_CREATE_TOPICS: "test,test_response"
       KAFKA_BROKER_ID: 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
-      KAFKA_LISTENERS: INTERNAL://:9092,OUTSIDE://:9094
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,OUTSIDE://host.docker.internal:9094
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 

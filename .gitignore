@@ -1,6 +1,8 @@
 # compiled output
-/dist
-/node_modules
+/frontend/dist
+/frontend/node_modules
+/worker/dist
+/worker/node_modules
 
 # Logs
 logs

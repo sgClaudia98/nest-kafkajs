@@ -9,7 +9,11 @@ export class AppService {
     return this.producer
       .produce({
         topic: "test",
-        messages: [{ value: "Probando un mensaje" }],
+        messages: [
+          {
+            value: "dasd",
+          },
+        ],
       })
       .then(() => true)
       .catch((e) => {

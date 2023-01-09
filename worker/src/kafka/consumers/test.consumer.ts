@@ -8,7 +8,7 @@ export class TestConsumer implements OnModuleInit {
   async onModuleInit() {
     await this.consumerService.consume(
       {
-        topics: ["test-resp"],
+        topics: ["test"],
       },
       {
         eachMessage: async ({ topic, partition, message }) => {
@@ -18,7 +18,7 @@ export class TestConsumer implements OnModuleInit {
             partition: partition.toString(),
           });
         },
-      },
+      }
     );
   }
 }
