@@ -10,13 +10,13 @@ export class AppController {
   @Get()
   @Unprotected()
   getHello() {
-    return this.appService.testing();
+    return "Hello World";
   }
 
-  @Post()
+  @Post("/")
+  @Unprotected()
   createMessage(@Body() message: MessageDto) {
-    console.log(message);
-    return message;
+    return this.appService.sendMessage(message);
   }
 
   @Get("/anonymouse")

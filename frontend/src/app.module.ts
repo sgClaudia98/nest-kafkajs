@@ -22,7 +22,7 @@ import { TestConsumer } from "./kafka/consumers/test.consumer";
       // Secret key of the client taken from keycloak server
       secret: process.env.KEYCLOAK_SECRET,
       // Validation setup for dev-mode
-      tokenValidation: TokenValidation.OFFLINE,
+      tokenValidation: TokenValidation.NONE,
     }),
   ],
   controllers: [AppController],

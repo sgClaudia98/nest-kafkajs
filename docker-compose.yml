@@ -1,4 +1,6 @@
 version: '3.8'
+
+
 services:
   frontend:
     depends_on:
@@ -10,9 +12,9 @@ services:
       NODE_ENV: dev
       KAKFA_API_CONNECT: kafka_sad:9092
       KEYCLOAK_API_CONNECT: keycloak_sad:8080
-      KEYCLOAK_REALM: master
-      KEYCLOAK_CLIENT_ID: api-client
-      KEYCLOAK_SECRET: b500edae-a51a-461e-9672-dab78d694ecb
+      KEYCLOAK_REALM: testing_realm
+      KEYCLOAK_CLIENT_ID: rest-api-client
+      KEYCLOAK_SECRET: ZMSMQL8qdlHzZ47ne4uAu9tCADIwMbiV
     build:
       context: ./frontend/
       target: "dev"
@@ -20,26 +22,52 @@ services:
     entrypoint: ["npm", "run", "start:dev"]
     ports:
       - 3000:3000
-    volumes:
-      - ./frontend/:/usr/src/app
-      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  worker:
+    depends_on:
+      - kafka
+    container_name: "worker_api_dev"
+    image: "worker_api_dev"
+    environment:
+      NODE_ENV: dev
+      KAKFA_API_CONNECT: kafka_sad:9092
+    build:
+      context: ./worker/
+      target: "dev"
+      dockerfile: Dockerfile
+    entrypoint: ["npm", "run", "start:dev"]
     restart: unless-stopped
 
   keycloak:
     container_name: "keycloak_sad"
     depends_on:
       - kafka
+      #- postgres
     image: quay.io/keycloak/keycloak:20.0.1
     command: 'start-dev'
     ports: 
       - "8080:8080"
     environment: 
-      - 'KEYCLOAK_ADMIN=admin'
-      - 'KEYCLOAK_ADMIN_PASSWORD=admin'
-      - 'KEYCLOAK_IMPORT=./tmp/realm-export.json'
-      - 'DB_VENDOR=h2'
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      DB_VENDOR: h2
+      #DB_VENDOR: POSTGRES
+      #DB_ADDR: postgres
+      #DB_DATABASE: keycloak
+      #DB_USER: keycloak
+      #DB_PASSWORD: password
     volumes: 
-      - ./tmp/realm-export.json:/opt/keycloak/data/import
+      - keycloak-data:/opt/keycloak
+
+#  postgres:
+#    image: postgres
+#    volumes:
+#      - ./postgres-data:/var/lib/postgresql/data
+#    environment:
+#      POSTGRES_DB: keycloak
+#      POSTGRES_USER: keycloak
+#      POSTGRES_PASSWORD: password
 
   zookeeper:
     image: wurstmeister/zookeeper:latest
@@ -68,3 +96,7 @@ services:
 networks:
   default: 
     name: sad-net
+
+volumes:
+  keycloak-data:
+    driver: local
