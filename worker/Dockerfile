@@ -1,6 +1,13 @@
-FROM node:fermium-alpine as dev
+FROM node:latest as dev
+
+RUN apt install -y git
+
+WORKDIR /usr/src
+
+RUN mkdir temp
 
 WORKDIR /usr/src/app
+
 COPY package*.json ./
 
 RUN npm install
@@ -11,10 +18,16 @@ COPY . .
 
 RUN npm run build
 
-FROM node:fermium-alpine as prod
+FROM node:latest as prod
+
+RUN apt install -y git
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
+
+WORKDIR /usr/src
+
+RUN mkdir temp
 
 WORKDIR /usr/src/app
 

@@ -7,6 +7,7 @@ export class AppService {
   constructor(private readonly producer: ProducerService) {}
 
   async sendMessage(message: MessageDto): Promise<boolean> {
+    console.log("PRODUCE", message);
     return this.producer
       .produce({
         topic: "test",

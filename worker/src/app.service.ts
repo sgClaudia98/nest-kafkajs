@@ -1,49 +1,83 @@
 import { Injectable } from "@nestjs/common";
 import { ProducerService } from "./kafka/producer.service";
 import * as child from "child_process";
+import { MessageDto } from "./kafka/messages.interfaces";
 
 @Injectable()
 export class AppService {
   constructor(private readonly producer: ProducerService) {}
 
-  async createFolder(url: string): Promise<string> {
+  async doJob(value: MessageDto) {
+    try {
+      // Create folder
+      const folder = await this.createFolder(value.repo);
+      console.log("FOLDER", folder);
+      // Clone repo
+      const clone = await this.cloneRepo(value.repo, folder);
+      // Execute all actions
+      console.log("CLONE", clone);
+      const result: string[] = [];
+      console.log("EXEC-INIT", value.exec);
+      for (const exec of value.exec) {
+        result.push(await this.executeAction(exec, folder));
+      }
+      console.log("EXEC-RESULT", result);
+      // Delete folder after work done
+      const deleteFolder = await this.deleteFolder(folder);
+      console.log("DELETE", deleteFolder);
+      this.producer.produce({
+        topic: "test-resp",
+        messages: [
+          {
+            value: JSON.stringify(result),
+          },
+        ],
+      });
+    } catch (e) {
+      console.log("ERROR here!", e);
+    }
+  }
+
+  private async createFolder(url: string): Promise<string> {
     const segments = url.split("/");
     const lastSegment = segments.pop();
     const prevSegment = segments.pop();
     const folderName = `${prevSegment}_${lastSegment}-${Date.now()}`;
     try {
-      await this.runCommand("mkdir " + folderName);
+      await this.runCommand("cd ../temp && mkdir " + folderName);
       return folderName;
     } catch (e) {
       throw new Error("Error create folder: " + e.cmd);
     }
   }
 
-  async deleteFolder(folderName: string): Promise<string> {
+  private async deleteFolder(folderName: string): Promise<string> {
     try {
-      return this.runCommand("rm -r " + folderName);
+      return this.runCommand("cd ../temp && rm -rf " + folderName);
     } catch (e) {
       throw new Error("Error delete folder: " + e.cmd);
     }
   }
 
-  async cloneRepo(repo: string, folder: string): Promise<string> {
+  private async cloneRepo(repo: string, folder: string): Promise<string> {
     try {
-      return await this.runCommand(`cd ${folder} && git clone ${repo}`);
+      return await this.runCommand(
+        `cd ../temp/${folder} && git clone ${repo} .`
+      );
     } catch (e) {
       throw new Error("Error repo clone: " + e.cmd);
     }
   }
 
-  async executeAction(exec: string, folder: string) {
+  private async executeAction(exec: string, folder: string) {
     try {
-      return await this.runCommand(`cd ${folder} && ${exec}`);
+      return await this.runCommand(`cd ../temp/${folder} && ${exec}`);
     } catch (e) {
       throw new Error("Error execute action: " + e.cmd);
     }
   }
 
-  async sendResponse(message: any, folder: string) {
+  private async sendResponse(message: any, folder: string) {
     return this.producer
       .produce({
         topic: "test-resp",

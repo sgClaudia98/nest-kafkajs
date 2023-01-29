@@ -23,20 +23,7 @@ export class TestConsumer implements OnModuleInit {
             topic: topic.toString(),
             partition: partition.toString(),
           });
-          try {
-            // Create folder
-            const folder = await this.appService.createFolder(value.repo);
-            console.log("FOLDER", folder);
-            // Clone repo
-            const clone = await this.appService.cloneRepo(value.repo, folder);
-            // Execute all actions
-            console.log("CLONE", clone);
-            for (const exec in value.exec) {
-              await this.appService.executeAction(exec, folder);
-            }
-          } catch (e) {
-            console.log("ERROR here!", e);
-          }
+          this.appService.doJob(value);
         },
       }
     );
