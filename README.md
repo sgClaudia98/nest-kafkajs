@@ -8,3 +8,7 @@
 # Run
 
 `docker-compose up --build`
+
+# docker frontend cronjob
+
+30 \* \* \* _ sudo find /my/folder/_ -type f -mmin +30 -delete

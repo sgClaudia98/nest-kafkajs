@@ -81,9 +81,7 @@ export class AppController {
     } catch (e) {
       console.log(e.message, "message");
       if (e.code == "ENOENT")
-        return response
-          .status(HttpStatus.NOT_FOUND)
-          .send("User can't access resource");
+        return response.status(HttpStatus.NOT_FOUND).send("Resource not found");
     }
     return response
       .status(HttpStatus.FORBIDDEN)

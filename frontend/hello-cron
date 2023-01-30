@@ -1,0 +1,2 @@
+
+30 * * * * sudo find /usr/src/temp/* -type f -mmin +5 -delete
