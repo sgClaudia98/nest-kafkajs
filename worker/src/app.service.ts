@@ -10,7 +10,7 @@ export class AppService {
   async doJob(value: MessageDto) {
     try {
       // Create folder
-      const folder = await this.createFolder(value.repo);
+      const folder = await this.createFolder(value.repo, value.id);
       console.log("FOLDER", folder);
       // Clone repo
       const clone = await this.cloneRepo(value.repo, folder);
@@ -25,24 +25,18 @@ export class AppService {
       // Delete folder after work done
       const deleteFolder = await this.deleteFolder(folder);
       console.log("DELETE", deleteFolder);
-      this.producer.produce({
-        topic: "test-resp",
-        messages: [
-          {
-            value: JSON.stringify(result),
-          },
-        ],
-      });
+      const sendResponse = this.sendResponse(value, result);
+      console.log("SENDRESP", sendResponse);
     } catch (e) {
       console.log("ERROR here!", e);
     }
   }
 
-  private async createFolder(url: string): Promise<string> {
+  private async createFolder(url: string, id: string): Promise<string> {
     const segments = url.split("/");
     const lastSegment = segments.pop();
     const prevSegment = segments.pop();
-    const folderName = `${prevSegment}_${lastSegment}-${Date.now()}`;
+    const folderName = `${prevSegment}_${lastSegment}-${id}`;
     try {
       await this.runCommand("cd ../temp && mkdir " + folderName);
       return folderName;
@@ -77,13 +71,17 @@ export class AppService {
     }
   }
 
-  private async sendResponse(message: any, folder: string) {
+  private async sendResponse(value: MessageDto, result: string[]) {
     return this.producer
       .produce({
         topic: "test-resp",
         messages: [
           {
-            value: JSON.stringify(message),
+            value: JSON.stringify({
+              ...value,
+              result: result,
+              updatedAt: Date.now(),
+            }),
           },
         ],
       })

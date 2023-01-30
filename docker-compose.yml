@@ -10,8 +10,9 @@ services:
     image: "frontend_api_dev"
     environment:
       NODE_ENV: dev
+      SECRET: "hello shake"
       KAKFA_API_CONNECT: kafka_sad:9092
-      KEYCLOAK_API_CONNECT: keycloak_sad:8080
+      KEYCLOAK_API_CONNECT: http://keycloak_sad:8080
       KEYCLOAK_REALM: testing_realm
       KEYCLOAK_CLIENT_ID: rest-api-client
       KEYCLOAK_SECRET: ZMSMQL8qdlHzZ47ne4uAu9tCADIwMbiV
@@ -52,11 +53,6 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
       DB_VENDOR: h2
-      #DB_VENDOR: POSTGRES
-      #DB_ADDR: postgres
-      #DB_DATABASE: keycloak
-      #DB_USER: keycloak
-      #DB_PASSWORD: password
     volumes: 
       - keycloak-data:/opt/keycloak
 

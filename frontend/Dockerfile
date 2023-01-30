@@ -1,5 +1,7 @@
 FROM node:fermium-alpine as dev
 
+WORKDIR /usr/src
+RUN mkdir temp
 WORKDIR /usr/src/app
 COPY package*.json ./
 

@@ -10,7 +10,7 @@ import {
   AuthGuard,
   TokenValidation,
 } from "nest-keycloak-connect";
-import { TestConsumer } from "./kafka/consumers/test.consumer";
+import { TestConsumer } from "./consumers/test.consumer";
 
 @Module({
   imports: [
