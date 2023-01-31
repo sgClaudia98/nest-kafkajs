@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from "@nestjs/common";
 import { AppService } from "src/app.service";
-import { ResponseDto } from "src/kafka/messages.interfaces";
+import { MessageResponse } from "src/messages.interfaces";
 import { ConsumerService } from "../kafka/consumer.service";
 
 @Injectable()
@@ -17,7 +17,7 @@ export class TestConsumer implements OnModuleInit {
       },
       {
         eachMessage: async ({ topic, partition, message }) => {
-          const value: ResponseDto = JSON.parse(message.value.toString());
+          const value: MessageResponse = JSON.parse(message.value.toString());
           console.log({
             value: message.value.toString(),
             topic: topic.toString(),

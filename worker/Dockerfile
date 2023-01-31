@@ -1,4 +1,4 @@
-FROM node:latest as dev
+FROM node:19 as dev
 
 RUN apt install -y git
 
@@ -18,7 +18,7 @@ COPY . .
 
 RUN npm run build
 
-FROM node:latest as prod
+FROM node:19 as prod
 
 RUN apt install -y git
 

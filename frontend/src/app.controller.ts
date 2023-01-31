@@ -17,17 +17,6 @@ import { SavedFile } from "./messages.interfaces";
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  // Testing api
-  @Post()
-  @Unprotected()
-  sendSomething(@Body() message: MessageDto) {
-    return this.appService.sendMessage({
-      ...message,
-      id: "sub_user",
-      createdAt: Date.now(),
-    });
-  }
-
   // Envian mensajes solo usuarios autorizados
   @Post("/job")
   sendMessage(@Body() message: MessageDto, @AuthenticatedUser() user: any) {
@@ -50,18 +39,29 @@ export class AppController {
   // Get all jobs only admins
   @Get("/job")
   @Roles({ roles: ["realm:admin"] })
-  getJobs(): string {
-    return `Hello admin`;
+  async getJobs(@Res() response): Promise<SavedFile[]> {
+    try {
+      return response
+        .status(HttpStatus.OK)
+        .send(await this.appService.getAllResponse());
+    } catch (e) {
+      console.log(e.message, "message");
+      if (e.code == "ENOENT")
+        return response.status(HttpStatus.NOT_FOUND).send("Resource not found");
+    }
+    return response
+      .status(HttpStatus.FORBIDDEN)
+      .send("User can't access resource");
   }
 
   // Consultan mensajes solo usuarios
   @Get("/job/:job_id")
-  @Roles({ roles: ["realm:user"] })
+  @Roles({ roles: ["realm:user", "realm:admin"] })
   async getResponse(
     @Param("job_id") jobId: string,
     @AuthenticatedUser() user: any,
     @Res() response,
-  ) {
+  ): Promise<SavedFile> {
     try {
       const file: SavedFile = await this.appService.getResponse(jobId);
 

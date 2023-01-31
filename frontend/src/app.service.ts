@@ -100,15 +100,18 @@ export class AppService {
     try {
       const files = fs.readdirSync("../temp/");
       //listing all files using forEach
-      files.forEach(async function (file) {
-        const _temp = file.split(".")[0];
-        arr.push(await this.getResponse(_temp));
-      });
+      console.log("FILES", files);
+      if (files)
+        for (const file of files) {
+          const _temp = file.split(".")[0];
+          arr.push(await this.getResponse(_temp));
+        }
     } catch (err) {
       //handling error
       console.log("Unable to scan directory: " + err);
       throw new Error(err);
     }
+    console.log(arr, "ARRAR");
     return arr;
   }
 }

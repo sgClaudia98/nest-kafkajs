@@ -1,4 +1,4 @@
-FROM node:fermium-alpine as dev
+FROM node:19 as dev
 
 WORKDIR /usr/src
 RUN mkdir temp
@@ -13,7 +13,7 @@ COPY . .
 
 RUN npm run build
 
-FROM node:fermium-alpine as prod
+FROM node:19 as prod
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
