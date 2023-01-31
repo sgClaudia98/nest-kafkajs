@@ -1,11 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import {
-  MessageSend,
-  ResponseDto,
-  SavedFile,
-} from "./kafka/messages.interfaces";
 import { ProducerService } from "./kafka/producer.service";
 import * as fs from "fs";
+import { MessageResponse, MessageSend, SavedFile } from "./messages.interfaces";
 
 @Injectable()
 export class AppService {
@@ -41,7 +37,7 @@ export class AppService {
       });
   }
 
-  saveResponse(message: ResponseDto): boolean {
+  saveResponse(message: MessageResponse): boolean {
     try {
       let text = "";
       message.result.forEach(function (v, index) {
@@ -97,5 +93,22 @@ export class AppService {
         }
       });
     });
+  }
+
+  async getAllResponse(): Promise<SavedFile[]> {
+    const arr: SavedFile[] = [];
+    try {
+      const files = fs.readdirSync("../temp/");
+      //listing all files using forEach
+      files.forEach(async function (file) {
+        const _temp = file.split(".")[0];
+        arr.push(await this.getResponse(_temp));
+      });
+    } catch (err) {
+      //handling error
+      console.log("Unable to scan directory: " + err);
+      throw new Error(err);
+    }
+    return arr;
   }
 }

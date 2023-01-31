@@ -9,8 +9,9 @@ import {
 } from "@nestjs/common";
 import { Roles, Unprotected, AuthenticatedUser } from "nest-keycloak-connect";
 import { AppService } from "./app.service";
-import { MessageDto, SavedFile } from "./kafka/messages.interfaces";
 import { createHash } from "crypto";
+import { MessageDto } from "./input.dto";
+import { SavedFile } from "./messages.interfaces";
 
 @Controller()
 export class AppController {
