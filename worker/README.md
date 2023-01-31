@@ -15,9 +15,6 @@
 ### Explicación de tipos de ficheros
 
 1. .module.ts : fichero de definición de un módulo, aquí se declaran los servicios como proveedores (providers) y los controladores (controllers). Además si el módulo depende de otro módulo se importa (imports) y si existe algún servicio que el módulo comparte se exporta (exports)
-2. .controller.ts : fichero de entrada de información, expone las APIs REST y define qué servicio de los que existen van a tratar esta solicitud.
-3. .service.ts : fichero de servicio se encarga de un tipo de tarea y contiene el código grueso de cada funcionalidad, son inyectados en los controladores o servicios que los utilizan.
-
-## Pruebas
-
-La carpeta ./test es la ubicación donde se ubicarían las pruebas a realizar.
+2. .service.ts : fichero de servicio se encarga de un tipo de tarea y contiene el código grueso de cada funcionalidad, son inyectados en los controladores o servicios que los utilizan.
+3. .interfaces.ts : son definiciones de interfaces utilizadas
+4. .consumer.ts : son consumers de kafka
